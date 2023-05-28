@@ -1,0 +1,18 @@
+<! -- наследование шаблона default -->
+{% extends 'flatpages/default.html' %}
+
+{% block title %} Create The Post {% endblock title %}
+
+{% block content %}
+<h3>Информация о статье</h3>
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Запостить!">
+</form>
+
+<br>
+<button> <a class="nav-link" href="/portal/">Вернуться</a> </button>
+
+
+{% endblock content %}

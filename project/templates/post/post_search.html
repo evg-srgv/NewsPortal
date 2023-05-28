@@ -1,0 +1,133 @@
+<! -- наследование шаблона default -->
+{% extends 'flatpages/default.html' %}
+
+{% block title %} Find News {% endblock title %}
+
+{% load custom_filters %}
+
+
+
+<! -- начало контента -->
+{% block content %}
+
+<h1>Новости</h1>
+
+<hr>
+
+<!-- Перед таблицей добавим форму для поиска -->
+<form method="GET">
+    {{ search.form }} <!-- Форму от фильтров за нас сделает django.
+    А вот кнопку, увы придётся делать самому -->
+    <input type="submit" value="Найти">
+</form>
+
+<hr>
+
+{% if search.qs %}
+
+<table>
+	<tr>
+		<td>
+			<b>
+				№ &nbsp
+			</b>
+		</td>
+		
+		<td>
+			<b>
+				&nbsp Заголовок 
+			</b>
+		</td>
+
+		<td>
+			<b>
+				 &nbsp &nbsp Текст 
+			</b>
+		</td>
+
+		<td>
+			<b>
+				&nbsp &nbsp Категория &nbsp
+			</b>
+		</td>
+        <td>
+            <b>
+                &nbsp &nbsp &nbsp  Тип поста &nbsp
+            </b>
+        </td>
+
+		<td>
+			<b>
+				&nbsp &nbsp &nbsp Дата публикации &nbsp
+			</b>
+		</td>
+	</tr>
+		{% for post in search.qs %}
+		<tr>
+            <td>
+                {{ post.id }}
+            </td>
+
+            <td> &nbsp
+                <!-- гиперсслыка -->
+                <a href="{% url 'post_detail' post.id %}"> {{ post.postTitle|default:"Без заголовка"|truncatewords:3|censor}}
+            <br>
+            </td>
+            <td>
+                &nbsp &nbsp {{ post.postContent|truncatechars:50|censor}}
+            </td>
+            <td> 
+                {{ category }}
+            </td>
+            <td> 
+                &nbsp &nbsp &nbsp {{ post.categoryType}}
+            </td>
+            <td>
+                &nbsp &nbsp &nbsp {{ post.publicationDate|default:"Без даты" }}
+            </td>
+		{% endfor %}
+		</tr>
+	</table>
+{% else %}
+<h2>
+    Новостей нет!
+</h2>
+{% endif %}
+
+
+<br>
+
+<!-- блок пагинатора -->
+
+
+{% if is_paginated %} 
+   
+    {% if page_obj.has_previous %}
+        <a href="?page=1">Первая стр.</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><</a>
+        <div class="col-lg-12 text-center"></div>   
+    {% endif %}
+ 
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+ 
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя стр.</a>
+    {% endif %}
+
+{% endif %}
+
+
+<br>
+<button> <a class="nav-link" href="/portal/">Вернуться</a> </button>
+
+
+<! -- конец контента -->
+{% endblock content %}
+

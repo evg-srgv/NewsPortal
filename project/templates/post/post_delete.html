@@ -1,0 +1,82 @@
+<! -- наследование шаблона default -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+<h2>Вы действительно хотите удалить данную статью?</h2>
+<table>
+    <tr>
+        <td>
+            <b>
+                № &nbsp
+            </b>
+        </td>
+        
+        <td>
+            <b>
+                &nbsp Заголовок 
+            </b>
+        </td>
+
+        <td>
+            <b>
+                 &nbsp &nbsp Текст 
+            </b>
+        </td>
+
+        <td>
+            <b>
+                &nbsp &nbsp Категория &nbsp
+            </b>
+        </td>
+
+        <td>
+            <b>
+                &nbsp &nbsp &nbsp  Тип поста &nbsp
+            </b>
+        </td>
+
+        <td>
+            <b>
+                &nbsp &nbsp &nbsp Дата публикации &nbsp
+            </b>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            {{ post.id }}
+        </td>
+
+        <td>
+            &nbsp {{ post.postTitle|default:"Без заголовка"|truncatewords:3|censor}}
+        </td>
+        <td>
+            &nbsp &nbsp   {{ post.postContent|truncatechars:50|censor}}
+        </td>
+        
+
+        <td> 
+            {{ category }}
+        </td>
+        <td> 
+            &nbsp &nbsp &nbsp {{ post.categoryType }}
+        </td>
+        <td>
+            &nbsp &nbsp &nbsp {{ post.publicationDate|default:"Без даты" }}
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+
+    <br>
+<button> <a class="nav-link" href="/portal/">Вернуться</a> </button>
+{% endblock content %} 
+
+
